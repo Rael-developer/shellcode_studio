@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Web IDE</title>
+    
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/theme/dracula.min.css">
+    
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <header class="top-bar">
+        <div style="display: flex; align-items: center; gap: 15px;">
+            <button id="btn-menu" class="icon-button">☰</button>
+            <h1>{ ShellCode_Studio }</h1>
+        </div>
+        <div class="header-buttons">
+            <button id="btn-download" class="neon-button white">📥 Baixar Código</button>
+            <button id="btn-run-web" class="neon-button">▶️ Executar Web</button>
+            <button id="btn-run-py" class="neon-button magenta">▶️ Executar Python</button>
+        </div>
+    </header>
+
+    <div id="info-modal" class="modal-overlay">
+        <div class="modal-content">
+            <span id="close-modal" class="close-btn">&times;</span>
+            <div class="modal-layout">
+                <div class="modal-sidebar">
+                    <button class="m-tab-btn active" data-target="sobre-projeto">Sobre o Projeto</button>
+                    <button class="m-tab-btn" data-target="como-usar">Como usar?</button>
+                    <button class="m-tab-btn" data-target="sobre-criador">Sobre o Criador</button>
+                    <button class="m-tab-btn" data-target="contatos">Contatos</button>
+                </div>
+                <div class="modal-body">
+                    <div id="sobre-projeto" class="m-content active">
+                        <h2>ShellCode Studio</h2>
+                        <p>Uma IDE Web Client-Side completa projetada para alta performance.</p>
+                        <p>Desenvolvida para rodar diretamente no navegador, permitindo a renderização em tempo real de interfaces front-end (HTML/CSS/JS) e a compilação nativa de scripts Python via WebAssembly (Pyodide).</p>
+                    </div>
+                    <div id="como-usar" class="m-content">
+                        <h2>Guia Rápido</h2>
+                        <ul>
+                            <li><strong>Ambiente Web:</strong> Escreva nos painéis HTML, CSS e JS. Clique em <em>"Executar Web"</em> para atualizar o Live Preview.</li>
+                            <li><strong>Ambiente Python:</strong> Escreva seu algoritmo e clique em <em>"Executar Python"</em>. O Output será exibido no terminal integrado.</li>
+                            <li><strong>Download:</strong> Acesse a aba do código que deseja salvar e clique em <em>"Baixar Código"</em>.</li>
+                            <li><strong>Atalho:</strong> Digite <strong>!</strong> na aba HTML para gerar a estrutura básica.</li>
+                        </ul>
+                    </div>
+                    <div id="sobre-criador" class="m-content">
+                        <h2>O Engenheiro</h2>
+                        <p>Sistema arquitetado e desenvolvido de forma independente por <strong>Israel Tech</strong>.</p>
+                        <p>Focado na criação de ferramentas profissionais, layouts cyberpunk/neon e exploração de motores de compilação client-side.</p>
+                    </div>
+                    <div id="contatos" class="m-content">
+                        <h2>Conecte-se</h2>
+                        <p><strong>E-mail:</strong> rodriguesisrael.30@proton.me</p>
+                        <p><strong>GitHub:</strong> github.com/Rael-developer</p>
+                        <p><strong>LinkedIn:</strong> https://www.linkedin.com/in/israel-rodrigues-a90aa2368/</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <main class="ide-container">
+        <section class="panel left-panel">
+            <div class="tab-header">
+                <button class="tab-btn active" data-lang="html">HTML</button>
+                <button class="tab-btn" data-lang="css">CSS</button>
+                <button class="tab-btn" data-lang="js">JS</button>
+                <button class="tab-btn" data-lang="py">Python</button>
+            </div>
+            
+            <div class="editor-content">
+                <div id="wrapper-html" class="code-wrapper active"></div>
+                <div id="wrapper-css" class="code-wrapper"></div>
+                <div id="wrapper-js" class="code-wrapper"></div>
+                <div id="wrapper-py" class="code-wrapper"></div>
+            </div>
+        </section>
+
+        <section class="panel right-panel">
+            <div class="preview-container">
+                <div class="panel-title">Live Preview</div>
+                <iframe id="preview-frame"></iframe>
+            </div>
+            
+            <div class="terminal-container">
+                <div class="panel-title terminal-title">Terminal Output</div>
+                <div id="terminal-output" class="terminal-screen">
+                    <span class="prompt">>_</span> Sistema inicializado. Aguardando execução...
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <footer class="bottom-bar">
+        <span>>_ Desenvolvido por Israel Tech &copy; 2026</span>
+    </footer>
+
+    <script src="https://cdn.jsdelivr.net/pyodide/v0.25.1/full/pyodide.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/codemirror.min.js"></script>
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/xml/xml.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/css/css.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/javascript/javascript.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/mode/python/python.min.js"></script>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/fold/xml-fold.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/codemirror/5.65.13/addon/edit/closetag.min.js"></script>
+
+    <script src="script.js"></script>
+</body>
+</html>

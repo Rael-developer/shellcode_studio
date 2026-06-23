@@ -1,0 +1,482 @@
+:root {
+    --bg-dark: #0A0A0C;
+    --panel-bg: #13131A;
+    --text-main: #E0E0E0;
+    --neon-cyan: #00F0FF;
+    --neon-magenta: #FF003C;
+    --border-color: #2A2A35;
+}
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+/* Barras de rolagem customizadas */
+::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+::-webkit-scrollbar-track {
+    background: var(--panel-bg);
+}
+::-webkit-scrollbar-thumb {
+    background: #3E3E4A;
+    border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+    background: var(--neon-cyan);
+}
+
+/* Layout Base (Desktop) */
+body {
+    background-color: var(--bg-dark);
+    color: var(--text-main);
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden; /* Trava no PC, mas soltaremos no mobile */
+}
+
+/* Header */
+.top-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: var(--panel-bg);
+    border-bottom: 1px solid var(--border-color);
+    box-shadow: 0 2px 10px rgba(0, 240, 255, 0.1);
+    flex-shrink: 0; /* IMPEDE que o header seja esmagado e suma */
+    z-index: 1000;
+}
+
+.top-bar h1 {
+    font-size: 1.2rem;
+    color: var(--neon-cyan);
+    letter-spacing: 2px;
+}
+
+.header-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.neon-button {
+    background: transparent;
+    color: var(--neon-cyan);
+    border: 1px solid var(--neon-cyan);
+    padding: 8px 20px;
+    cursor: pointer;
+    font-weight: bold;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+.neon-button:hover {
+    background: var(--neon-cyan);
+    color: var(--bg-dark);
+    box-shadow: 0 0 10px var(--neon-cyan);
+}
+.neon-button.magenta {
+    color: var(--neon-magenta);
+    border-color: var(--neon-magenta);
+}
+.neon-button.magenta:hover {
+    background: var(--neon-magenta);
+    color: var(--bg-dark);
+    box-shadow: 0 0 10px var(--neon-magenta);
+}
+
+/* Container da IDE */
+.ide-container {
+    display: flex;
+    flex: 1;
+    overflow: hidden;
+}
+
+.panel {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.left-panel {
+    border-right: 1px solid var(--border-color);
+}
+
+/* ==========================================
+   SISTEMA DE ABAS (Estilo Grade/Fichário Colorido)
+========================================== */
+.tab-header {
+    display: flex;
+    background-color: #070709; /* Fundo mais escuro para destacar as abas como botões */
+    border-bottom: 1px solid var(--border-color);
+    overflow-x: auto;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.tab-btn {
+    flex: 1;
+    background: var(--panel-bg);
+    color: #555; /* Cor apagada quando inativo */
+    border: none;
+    border-right: 1px solid var(--border-color); /* Linha vertical formando a grade */
+    border-top: 3px solid transparent; /* Prepara o espaço para a barra colorida */
+    padding: 12px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+/* Remove a linha da última aba para ficar simétrico */
+.tab-btn:last-child {
+    border-right: none; 
+}
+
+.tab-btn:hover {
+    background: #1a1a24;
+    color: #888;
+}
+
+/* Quando a aba está ativa (O truque para parecer uma pasta aberta) */
+.tab-btn.active {
+    background-color: #282a36; /* Exatamente a mesma cor de fundo do CodeMirror */
+    border-bottom: 1px solid #282a36; /* "Apaga" a linha de baixo para mesclar com o editor */
+}
+
+/* ==========================================
+   SISTEMA DE ABAS (Estilo Cápsula Neon)
+========================================== */
+.tab-header {
+    display: flex;
+    background-color: #070709; 
+    border-bottom: 1px solid var(--border-color);
+    overflow-x: auto;
+    white-space: nowrap;
+    flex-shrink: 0;
+}
+
+.tab-btn {
+    flex: 1;
+    background: var(--panel-bg);
+    color: #555; 
+    border: none;
+    border-right: 1px solid var(--border-color); 
+    border-top: 3px solid transparent; 
+    border-bottom: 3px solid transparent; /* Adicionado para manter a simetria */
+    padding: 12px;
+    cursor: pointer;
+    font-size: 0.9rem;
+    font-weight: bold;
+    transition: all 0.3s ease;
+}
+
+.tab-btn:last-child {
+    border-right: none; 
+}
+
+.tab-btn:hover {
+    background: #1a1a24;
+    color: #888;
+}
+
+/* Fundo da aba ativa */
+.tab-btn.active {
+    background-color: #282a36; 
+}
+
+/* ==========================================
+   CORES OFICIAIS DAS LINGUAGENS (Topo e Base)
+========================================== */
+
+/* HTML5 - Laranja Oficial */
+.tab-btn[data-lang="html"].active {
+    border-top-color: #E34F26;
+    border-bottom-color: #E34F26;
+    color: #E34F26;
+    text-shadow: 0 0 8px rgba(227, 79, 38, 0.4);
+}
+
+/* CSS3 - Azul Oficial */
+.tab-btn[data-lang="css"].active {
+    border-top-color: #1572B6;
+    border-bottom-color: #1572B6;
+    color: #1572B6;
+    text-shadow: 0 0 8px rgba(21, 114, 182, 0.4);
+}
+
+/* JavaScript - Amarelo Oficial */
+.tab-btn[data-lang="js"].active {
+    border-top-color: #F7DF1E;
+    border-bottom-color: #F7DF1E;
+    color: #F7DF1E;
+    text-shadow: 0 0 8px rgba(247, 223, 30, 0.4);
+}
+
+/* Python - Azul no Topo e Amarelo na Base */
+.tab-btn[data-lang="py"].active {
+    border-top-color: #3776AB;
+    border-bottom-color: #FFD43B;
+    color: #FFD43B;
+    text-shadow: 0 0 8px rgba(255, 212, 59, 0.3);
+}
+
+/* Editor */
+.editor-content {
+    flex: 1;
+    position: relative;
+    background-color: #282a36;
+    overflow: hidden;
+}
+
+.code-wrapper {
+    display: none;
+    position: absolute;
+    top: 0; bottom: 0; left: 0; right: 0;
+}
+.code-wrapper.active {
+    display: block;
+}
+
+.CodeMirror {
+    height: 100% !important;
+    width: 100% !important;
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 14px;
+}
+
+/* Painel Direito */
+.preview-container {
+    flex: 1.2;
+    display: flex;
+    flex-direction: column;
+    border-bottom: 1px solid var(--border-color);
+}
+.terminal-container {
+    flex: 0.8;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.panel-title {
+    background-color: var(--panel-bg);
+    padding: 6px 15px;
+    font-size: 0.8rem;
+    color: #888;
+    border-bottom: 1px solid var(--border-color);
+    text-transform: uppercase;
+    flex-shrink: 0;
+}
+.terminal-title {
+    color: var(--neon-magenta);
+}
+
+iframe {
+    flex: 1;
+    width: 100%;
+    border: none;
+    background-color: #FFFFFF;
+}
+
+.terminal-screen {
+    flex: 1;
+    background-color: #050507;
+    padding: 15px;
+    font-family: 'Consolas', 'Courier New', monospace;
+    font-size: 13px;
+    color: #00FF66;
+    overflow-y: auto;
+    overflow-x: auto;
+}
+.terminal-screen .prompt {
+    color: var(--neon-magenta);
+}
+.terminal-line {
+    margin-bottom: 3px;
+    white-space: pre-wrap;
+}
+.terminal-error {
+    color: #FF003C;
+    font-weight: bold;
+}
+
+/* Rodapé */
+.bottom-bar {
+    background-color: var(--panel-bg);
+    border-top: 1px solid var(--border-color);
+    padding: 6px 20px;
+    display: flex;
+    justify-content: center; /* <-- Essa é a linha que centraliza o texto */
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.bottom-bar span {
+    font-family: 'Consolas', monospace;
+    font-size: 0.75rem;
+    color: #555565;
+}
+
+/* ==========================================
+   RESPONSIVIDADE MÓVEL (A Mágica para o Celular)
+========================================== */
+@media (max-width: 768px) {
+    body {
+        height: auto; /* Remove a trava de 100vh */
+        overflow: auto; /* Permite rolar a tela toda para baixo */
+        display: block; /* Remove o flex do body */
+    }
+
+    .top-bar {
+        position: sticky; /* O cabeçalho gruda no topo e nunca some! */
+        top: 0;
+        flex-direction: column; /* Coloca o título e os botões em linhas diferentes */
+        gap: 10px;
+        padding: 10px;
+    }
+
+    .header-buttons {
+        width: 100%;
+        display: flex;
+        justify-content: space-between;
+    }
+
+    .neon-button {
+        flex: 1;
+        text-align: center;
+        padding: 10px 5px;
+        font-size: 0.85rem;
+    }
+
+    .ide-container {
+        display: flex;
+        flex-direction: column;
+        height: auto;
+    }
+
+    .panel {
+        height: 60vh; /* Cada painel ocupa 60% da tela. Você rola para ver o resto. */
+        flex: none;
+    }
+
+    .left-panel {
+        border-right: none;
+        border-bottom: 2px solid var(--border-color);
+    }
+}
+
+/* ==========================================
+   NOVOS BOTÕES E MENU HAMBÚRGUER
+========================================== */
+.icon-button {
+    background: transparent;
+    border: none;
+    color: var(--neon-cyan);
+    font-size: 1.8rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    padding: 0 5px;
+}
+.icon-button:hover {
+    color: var(--text-main);
+    text-shadow: 0 0 10px var(--neon-cyan);
+}
+
+.neon-button.white {
+    color: #E0E0E0;
+    border-color: #E0E0E0;
+}
+.neon-button.white:hover {
+    background: #E0E0E0;
+    color: var(--bg-dark);
+    box-shadow: 0 0 10px #E0E0E0;
+}
+
+/* ==========================================
+   MODAL DE INFORMAÇÕES (Overlay e Janela)
+========================================== */
+.modal-overlay {
+    display: none; /* Escondido por padrão */
+    position: fixed;
+    top: 0; left: 0; right: 0; bottom: 0;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(5px);
+    z-index: 2000;
+    justify-content: center;
+    align-items: center;
+}
+.modal-overlay.open {
+    display: flex;
+}
+
+.modal-content {
+    background: var(--bg-dark);
+    border: 1px solid var(--border-color);
+    box-shadow: 0 0 20px rgba(0, 240, 255, 0.2);
+    width: 600px;
+    max-width: 90%;
+    min-height: 350px;
+    border-radius: 8px;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+}
+
+.close-btn {
+    position: absolute;
+    top: 10px;
+    right: 15px;
+    font-size: 1.5rem;
+    color: #888;
+    cursor: pointer;
+    transition: 0.2s;
+    z-index: 10;
+}
+.close-btn:hover { color: var(--neon-magenta); }
+
+.modal-layout {
+    display: flex;
+    flex: 1;
+    margin-top: 20px;
+}
+
+/* Menu lateral do Modal */
+.modal-sidebar {
+    width: 180px;
+    border-right: 1px solid var(--border-color);
+    display: flex;
+    flex-direction: column;
+    padding-top: 20px;
+}
+.m-tab-btn {
+    background: transparent;
+    border: none;
+    color: #888;
+    padding: 15px;
+    text-align: left;
+    cursor: pointer;
+    border-left: 3px solid transparent;
+    transition: 0.3s;
+}
+.m-tab-btn:hover { color: var(--text-main); background: var(--panel-bg); }
+.m-tab-btn.active {
+    color: var(--neon-cyan);
+    border-left: 3px solid var(--neon-cyan);
+    background: var(--panel-bg);
+}
+
+/* Conteúdo do Modal */
+.modal-body {
+    flex: 1;
+    padding: 30px;
+}
+.m-content { display: none; line-height: 1.6; }
+.m-content.active { display: block; }
+.m-content h2 { color: var(--neon-cyan); margin-bottom: 15px; }
+.m-content ul { padding-left: 20px; }
+.m-content li { margin-bottom: 10px; }
