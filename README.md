@@ -3,11 +3,8 @@
 ![Linguagens](https://img.shields.io/badge/HTML5_|_CSS3_|_JS_|_Python-282a36?style=for-the-badge&logo=code&logoColor=FF007F)
 ![Licença](https://img.shields.io/badge/Desenvolvido_por-Israel_Tech-E34F26?style=for-the-badge)
 
-<<<<<<< HEAD
-![Print do Shellcode_Studio] (./projeto.png)
+![Print do Shellcode_Studio](./projeto.png)
 
-=======
->>>>>>> cd0ec4634ffa9661b5e8c5d7c747703d97e71330
 Uma IDE Web Client-Side de alta performance projetada com uma estética cyberpunk/neon. O **ShellCode Studio** permite a renderização em tempo real de interfaces front-end e a compilação nativa de scripts Python diretamente no navegador, garantindo produtividade e segurança sem a necessidade de servidores remotos.
 ---
 ## 🚫 O que o ShellCode Studio NÃO é
