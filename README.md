@@ -1,4 +1,4 @@
-# 💻 { ShellCode Studio }
+# 💻 { ShellCode_Studio }
 ![Status](https://img.shields.io/badge/Status-Em_Desenvolvimento-00F0FF?style=for-the-badge)
 ![Linguagens](https://img.shields.io/badge/HTML5_|_CSS3_|_JS_|_Python-282a36?style=for-the-badge&logo=code&logoColor=FF007F)
 ![Licença](https://img.shields.io/badge/Desenvolvido_por-Israel_Tech-E34F26?style=for-the-badge)
