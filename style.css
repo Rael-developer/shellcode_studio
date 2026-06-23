@@ -480,3 +480,40 @@ iframe {
 .m-content h2 { color: var(--neon-cyan); margin-bottom: 15px; }
 .m-content ul { padding-left: 20px; }
 .m-content li { margin-bottom: 10px; }
+
+/* ==========================================
+   ESTILIZAÇÃO DOS LINKS DE CONTATO (NEON)
+   ========================================== */
+.contact-links {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-top: 15px;
+}
+
+.neon-link {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    color: #E0E0E0; /* Cinza claro quando não está com o mouse em cima */
+    text-decoration: none;
+    font-size: 1.1rem;
+    font-weight: bold;
+    font-family: sans-serif;
+    transition: all 0.3s ease;
+}
+
+/* O SVG pega a cor do texto automaticamente graças ao fill="currentColor" */
+.neon-link svg {
+    transition: all 0.3s ease;
+}
+
+/* O efeito Hacker/Neon ao passar o mouse */
+.neon-link:hover {
+    color: #00F0FF; 
+    text-shadow: 0 0 8px #00F0FF;
+}
+
+.neon-link:hover svg {
+    filter: drop-shadow(0 0 6px #00F0FF);
+}
