@@ -7,6 +7,8 @@
 
 ## 🚀 Novidades da Última Versão (Atualização VFS)
 
+🔗 *[Click aqui para conhecer o shellcode_studio!](https://rael-developer.github.io/shellcode_studio/)*
+
 O *ShellCode Studio* recebeu uma grande atualização focada em gerenciamento de assets e imersão, trazendo recursos de IDEs de mesa para o navegador:
 
 * 📁 *File Explorer Integrado:* Nova barra lateral (Workspace) no estilo VS Code, responsiva e com menu off-canvas para dispositivos mobile.
