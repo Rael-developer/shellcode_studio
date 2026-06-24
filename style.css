@@ -517,3 +517,161 @@ iframe {
 .neon-link:hover svg {
     filter: drop-shadow(0 0 6px #00F0FF);
 }
+
+/* ==========================================
+   GERENCIADOR DE ARQUIVOS (SIDEBAR)
+   ========================================== */
+.explorer-panel {
+    width: 250px;
+    background-color: #1e1f29; /* Tom levemente mais escuro que o editor */
+    border-right: 1px solid #44475a;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+    transition: left 0.3s ease;
+    flex-shrink: 0; /* Impede que a barra seja esmagada no desktop */
+}
+
+.explorer-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 12px 15px;
+    background-color: #282a36;
+    border-bottom: 1px solid #44475a;
+}
+
+.explorer-header h3 {
+    font-size: 0.95rem;
+    color: #00F0FF;
+    margin: 0;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+/* Botão de Adicionar Arquivo (+) */
+.btn-action-small {
+    background: transparent;
+    border: 1px solid #00F0FF;
+    color: #00F0FF;
+    border-radius: 4px;
+    cursor: pointer;
+    padding: 5px 10px;
+    font-size: 0.85rem;
+    transition: all 0.3s ease;
+}
+
+.btn-action-small:hover {
+    background: #00F0FF;
+    color: #000;
+    box-shadow: 0 0 8px #00F0FF;
+}
+
+.explorer-body {
+    flex-grow: 1;
+    overflow-y: auto;
+    padding: 10px 0;
+}
+
+/* Lista de Arquivos (A Árvore) */
+.file-tree {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+}
+
+.file-tree li {
+    padding: 10px 15px;
+    font-size: 0.85rem;
+    color: #f8f8f2;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    border-left: 3px solid transparent;
+    transition: all 0.2s ease;
+    word-break: break-all;
+}
+
+/* Arquivos clicáveis (quando adicionarmos a lógica) */
+.file-tree li.file-item {
+    cursor: pointer;
+}
+
+.file-tree li.file-item:hover {
+    background-color: #44475a;
+    border-left: 3px solid #00F0FF;
+}
+
+.file-tree li.file-item i {
+    color: #ff79c6; /* Rosa neon característico do tema Dracula */
+}
+
+.file-tree li.empty-state:hover {
+    background-color: transparent;
+    border-left: 3px solid transparent;
+    cursor: default;
+}
+
+/* Botão de Menu do Explorer no Cabeçalho (Escondido no Desktop) */
+#btn-toggle-explorer {
+    display: none;
+}
+
+/* ==========================================
+   RESPONSIVIDADE: MOBILE (SMARTPHONES)
+   ========================================== */
+@media (max-width: 768px) {
+    /* Mostra o botão da pasta no topo */
+    #btn-toggle-explorer {
+        display: block;
+    }
+
+    /* Transforma a barra lateral em um menu flutuante (Off-canvas) */
+    .explorer-panel {
+        position: absolute;
+        top: 60px; /* Abaixo do cabeçalho */
+        left: -250px; /* Escondido para fora da tela */
+        height: calc(100vh - 60px);
+        z-index: 1000;
+        box-shadow: 5px 0 15px rgba(0,0,0,0.6);
+    }
+
+    /* Classe ativada pelo JavaScript para deslizar a barra para dentro */
+    .explorer-panel.open {
+        left: 0;
+    }
+}
+
+/* ==========================================
+   BOTÃO DE REMOVER ARQUIVO
+   ========================================== */
+.file-tree li.file-item {
+    justify-content: space-between; /* Empurra a lixeira para o canto direito */
+    padding-right: 10px;
+}
+
+.file-name-span {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-grow: 1;
+    overflow: hidden;
+}
+
+.btn-remove-file {
+    background: transparent;
+    border: none;
+    color: #ff5555; /* Vermelho da paleta Dracula */
+    cursor: pointer;
+    padding: 5px;
+    font-size: 1rem;
+    opacity: 0.6;
+    transition: all 0.3s ease;
+}
+
+.btn-remove-file:hover {
+    opacity: 1;
+    text-shadow: 0 0 8px #ff5555;
+    transform: scale(1.1);
+}

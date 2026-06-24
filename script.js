@@ -55,23 +55,18 @@ editors.html.on("change", (cm, changeObj) => {
     }
 
     // 2. Auto-fechamento à prova de falhas para Teclado Mobile
-    // Se a última coisa digitada incluir um ">", o sistema entra em ação
     if (changeObj.origin === "+input" && changeObj.text.join('').includes(">")) {
         const cursor = cm.getCursor();
         const lineText = cm.getLine(cursor.line).slice(0, cursor.ch);
         
-        // Regex: Lê a linha até o cursor e descobre qual foi a última tag aberta (ex: <h1>, <div class="x">)
         const match = lineText.match(/<([a-zA-Z0-9\-]+)[^>]*>$/);
         
         if (match) {
             const tagName = match[1].toLowerCase();
-            // Lista de tags que não precisam ser fechadas no HTML
             const selfClosingTags = ['img', 'input', 'br', 'hr', 'meta', 'link', 'source', 'area', 'base', 'col', 'embed', 'param', 'track', 'wbr'];
             
             if (!selfClosingTags.includes(tagName)) {
-                // Injeta a tag de fechamento correta após o cursor
                 cm.replaceRange(`</${tagName}>`, cursor);
-                // Move o cursor de volta para o meio das tags para você poder digitar!
                 cm.setCursor(cursor);
             }
         }
@@ -98,6 +93,104 @@ tabButtons.forEach(button => {
 });
 
 // ==========================================
+// SISTEMA DE ARQUIVOS VIRTUAL EM MEMÓRIA (VFS)
+// ==========================================
+// Declaramos as variáveis PRIMEIRO para que o Live Preview possa usá-las depois!
+const virtualFileSystem = {}; 
+
+function injectVirtualFiles(code) {
+    let finalCode = code;
+    const fileNames = Object.keys(virtualFileSystem);
+    
+    for (let fileName of fileNames) {
+        const blobUrl = virtualFileSystem[fileName];
+        finalCode = finalCode.split(fileName).join(blobUrl);
+    }
+    return finalCode;
+}
+
+const btnToggleExplorer = document.getElementById('btn-toggle-explorer');
+const explorerPanel = document.getElementById('file-explorer');
+const btnAddFile = document.getElementById('btn-add-file');
+const fileInput = document.getElementById('file-input');
+const fileList = document.getElementById('file-list');
+
+if (btnToggleExplorer) {
+    btnToggleExplorer.addEventListener('click', () => {
+        explorerPanel.classList.toggle('open');
+    });
+}
+
+if (btnAddFile) {
+    btnAddFile.addEventListener('click', () => {
+        fileInput.click();
+    });
+}
+
+if (fileInput) {
+    fileInput.addEventListener('change', (e) => {
+        const files = e.target.files;
+        
+        const emptyState = fileList.querySelector('.empty-state');
+        if (emptyState) {
+            emptyState.remove();
+        }
+
+        for (let i = 0; i < files.length; i++) {
+            const file = files[i];
+            
+            if (virtualFileSystem[file.name]) continue;
+
+            const blobUrl = URL.createObjectURL(file);
+            virtualFileSystem[file.name] = blobUrl;
+
+            const li = document.createElement('li');
+            li.className = 'file-item';
+            
+            let iconClass = 'fas fa-file'; 
+            if (file.type.startsWith('image/')) iconClass = 'fas fa-image';
+            else if (file.type.startsWith('audio/')) iconClass = 'fas fa-music';
+            else if (file.type.startsWith('video/')) iconClass = 'fas fa-video';
+
+            // Adicionamos um span para o nome e o botão de lixeira do FontAwesome
+            li.innerHTML = `
+                <span class="file-name-span" style="cursor: pointer;"><i class="${iconClass}"></i> ${file.name}</span>
+                <button class="btn-remove-file" title="Remover Arquivo"><i class="fas fa-trash"></i></button>
+            `;
+            
+            // O clique para copiar agora fica só no nome do arquivo (span)
+            const nameSpan = li.querySelector('.file-name-span');
+            nameSpan.addEventListener('click', () => {
+                navigator.clipboard.writeText(file.name);
+                alert(`Nome "${file.name}" copiado! Basta colar no seu HTML ou JS.`);
+            });
+
+            // Lógica do botão de remover (Lixeira)
+            const btnRemove = li.querySelector('.btn-remove-file');
+            btnRemove.addEventListener('click', () => {
+                // 1. Remove da memória RAM do navegador (evita memory leak)
+                URL.revokeObjectURL(virtualFileSystem[file.name]);
+                
+                // 2. Apaga do nosso objeto de controle interno
+                delete virtualFileSystem[file.name];
+                
+                // 3. Remove a linha da interface gráfica
+                li.remove();
+
+                // 4. Se a lista ficou vazia, volta a mensagem de estado inicial
+                if (Object.keys(virtualFileSystem).length === 0) {
+                    fileList.innerHTML = '<li class="empty-state" style="color: #6272a4; text-align: center; padding: 20px; font-size: 0.9rem;">Nenhum asset carregado.<br>Memória RAM limpa.</li>';
+                }
+            });
+
+            fileList.appendChild(li);
+        }
+        
+        fileInput.value = '';
+    });
+}
+
+// ==========================================
 // RENDERIZAÇÃO DO AMBIENTE WEB (IFRAME)
 // ==========================================
 function updatePreview() {
@@ -120,10 +213,12 @@ function updatePreview() {
     `;
 
     const iframe = document.getElementById('preview-frame');
-    iframe.srcdoc = combinedCode;
+    // Agora o injectVirtualFiles já existe quando essa linha rodar!
+    iframe.srcdoc = injectVirtualFiles(combinedCode);
 }
 
 document.getElementById('btn-run-web').addEventListener('click', updatePreview);
+// Chama a primeira vez para carregar a tela preta com neon
 updatePreview();
 
 // =======================================================
@@ -212,15 +307,12 @@ const btnCloseModal = document.getElementById('close-modal');
 const modalTabs = document.querySelectorAll('.m-tab-btn');
 const modalContents = document.querySelectorAll('.m-content');
 
-// Abrir e Fechar Modal
 btnMenu.addEventListener('click', () => modalOverlay.classList.add('open'));
 btnCloseModal.addEventListener('click', () => modalOverlay.classList.remove('open'));
-// Fechar ao clicar fora da janela
 modalOverlay.addEventListener('click', (e) => {
     if(e.target === modalOverlay) modalOverlay.classList.remove('open');
 });
 
-// Navegação dentro do Modal
 modalTabs.forEach(btn => {
     btn.addEventListener('click', () => {
         modalTabs.forEach(t => t.classList.remove('active'));
@@ -235,16 +327,12 @@ modalTabs.forEach(btn => {
 // LÓGICA DE DOWNLOAD DE CÓDIGO
 // ==========================================
 document.getElementById('btn-download').addEventListener('click', () => {
-    // 1. Descobre qual aba principal está ativa
     const activeTab = document.querySelector('.tab-btn.active');
     if(!activeTab) return;
     
     const lang = activeTab.getAttribute('data-lang');
-    
-    // 2. Extrai o código daquele editor específico
     const code = editors[lang].getValue();
     
-    // 3. Define o nome e extensão corretos do arquivo
     let fileName = 'codigo.txt';
     let mimeType = 'text/plain';
     
@@ -262,7 +350,6 @@ document.getElementById('btn-download').addEventListener('click', () => {
         mimeType = 'text/x-python';
     }
 
-    // 4. Criação do arquivo virtual e disparo do download nativo
     const blob = new Blob([code], { type: mimeType });
     const url = URL.createObjectURL(blob);
     
@@ -273,7 +360,6 @@ document.getElementById('btn-download').addEventListener('click', () => {
     document.body.appendChild(a);
     a.click();
     
-    // 5. Limpeza de memória
     document.body.removeChild(a);
     URL.revokeObjectURL(url);
 });
